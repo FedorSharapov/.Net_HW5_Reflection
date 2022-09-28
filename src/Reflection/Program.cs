@@ -11,7 +11,5 @@ namespace Reflection
 
             Console.ReadKey();
         }
-
-       
     }
 }

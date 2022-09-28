@@ -27,6 +27,8 @@ namespace Reflection
             text = (leadTimeMyJson > leadTimeNewtonsoftJson) ? "медленее" : "быстрее";
             ConsoleHelper.WriteLine($"\"{myJS.GetType().Name}\" {text} \"{newtonsoftJS.GetType().Name}\" на [{difference:F3}]",
                 ConsoleColor.Green);
+
+            Console.WriteLine();
         }
 
         private static double TestSerialize(ISerializer serializer, int numberIterations)
