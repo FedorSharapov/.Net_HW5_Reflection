@@ -7,6 +7,13 @@ namespace Reflection.Serializers
     {
         static private StringBuilder _result = new StringBuilder(64);
 
+        /// <summary>
+        /// Сериализация свойств объекта в Json формат
+        /// </summary>
+        /// <typeparam name="T">тип объекта сериализации</typeparam>
+        /// <param name="value">объект сериализации</param>
+        /// <returns>сериализованный объект в Json формате</returns>
+        /// <exception cref="ArgumentNullException">объект сериализации = null</exception>
         public static string Serialize<T>(T value)
         {
             if (value == null)
@@ -22,7 +29,7 @@ namespace Reflection.Serializers
                 _result.Append("\"");
                 _result.Append(properties[i].Name);
                 _result.Append("\":");
-                GetJsonValue(properties[i].GetValue(value), properties[i].PropertyType);
+                AddJsonValue(properties[i].GetValue(value), properties[i].PropertyType);
 
                 if (i != lastI)
                     _result.Append(",");
@@ -32,14 +39,20 @@ namespace Reflection.Serializers
             return _result.ToString();
         }
 
-        static void GetJsonValue(object obj, Type type)
+        /// <summary>
+        /// Добавление значения в сериализуемый объект
+        /// </summary>
+        /// <param name="value">значение</param>
+        /// <param name="type">тип значения</param>
+        /// <exception cref="Exception">Неизвестный тип значения</exception>
+        static void AddJsonValue(object value, Type type)
         {
             if (type == typeof(int))
-                _result.Append(obj.ToString());
+                _result.Append(value.ToString());
             else if (type == typeof(string))
             {
                 _result.Append("\"");
-                _result.Append(obj);
+                _result.Append(value);
                 _result.Append("\"");
             }
             else
