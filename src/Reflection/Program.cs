@@ -10,6 +10,9 @@ namespace Reflection
 
             Tests.CompareSerializers(100000);
 
+            Tests.CsvSerializationToFile("test.csv", 100000);
+            Tests.CsvDeserializationFromFile("test.csv");
+
             Console.ReadKey();
         }
     }

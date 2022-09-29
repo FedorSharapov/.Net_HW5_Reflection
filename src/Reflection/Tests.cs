@@ -97,5 +97,62 @@ namespace Reflection
             double meanVal = (stopwatch.ElapsedMilliseconds / (double)numberIterations) * 1000.0;
             ConsoleHelper.WriteLine($"Среднее время выполнения на 1 итерацию: [{meanVal:F1}] нс\r\n", ConsoleColor.Green);
         }
+
+        /// <summary>
+        /// Сериализация объекта в csv файл
+        /// </summary>
+        /// <param name="path">путь к файлу</param>
+        /// <param name="numberIterations">количество сериализаций</param>
+        public static void CsvSerializationToFile(string path, int numberIterations)
+        {
+            var testObject = new F();
+
+            // формируем тестовые данные
+            var data = new StringBuilder();
+            data.AppendLine(CsvSerializer.SerializeHeader(testObject));
+
+            for (int i = 0; i < numberIterations; i++)
+                data.AppendLine(CsvSerializer.Serialize(testObject));
+
+            CsvFile.Write(path, data.ToString());
+        }
+
+        /// <summary>
+        /// Десериализация объекта из csv файла
+        /// </summary>
+        /// <param name="path">путь к файлу</param>
+        public static void CsvDeserializationFromFile(string path)
+        {
+            // чтение данных 
+            var data = CsvFile.Read(path);
+            var values = data.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+
+            var numberIterations = values.Length - 1;
+            var objects = new F[numberIterations];
+            long sum = 0;
+
+            ConsoleHelper.WriteLine("[Десериализация данных из csv-файла]", ConsoleColor.Blue);
+            Console.WriteLine($"csv: {CsvSerializer.Serialize(new F())}");
+            ConsoleHelper.WriteLine($"Количество итераций: [{numberIterations}].", ConsoleColor.Yellow);
+
+            for (int j = 0; j < 10; j++)
+            {
+                Console.Write($"{j + 1}. ");
+
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                for (int i = 1; i < values.Length; i++)
+                    objects[i - 1] = CsvSerializer.Deserialize<F>(values[i]);
+
+                stopwatch.Stop();
+
+                sum += stopwatch.ElapsedMilliseconds;
+                ConsoleHelper.WriteLine($"Время выполнения: [{stopwatch.ElapsedMilliseconds}] мс", ConsoleColor.Yellow);
+            }
+
+            double meanVal = ((sum / 10.0) / numberIterations) * 1000.0;
+            ConsoleHelper.WriteLine($"Среднее время выполнения на 1 итерацию: [{meanVal:F3}] нс\r\n", ConsoleColor.Green);
+        }
     }
 }
