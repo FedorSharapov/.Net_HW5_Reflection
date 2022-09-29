@@ -6,7 +6,8 @@ namespace Reflection
     {
         static void Main(string[] args)
         {
-            Tests.CompareSerializers(10000);
+            Tests.TestConsoleWriteSerializedObjects(new SystemTextJsonSerializer(),100000);
+
             Tests.CompareSerializers(100000);
 
             Console.ReadKey();
